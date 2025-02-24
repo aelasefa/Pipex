@@ -1,0 +1,123 @@
+# PIPEX PROJECT
+
+## Introduction
+**Pipex** is a project inspired by shell pipelines (`|`). It aims to recreate the behavior of `cmd1 | cmd2` in a C program using system calls like `fork()`, `pipe()`, `dup2()`, and `execve()`. The goal is to develop a program that can handle input/output redirections and execute commands through pipes.
+
+---
+
+## 1. Understanding the Basics
+### **Key System Calls**
+1. **fork()** - Creates a new child process.
+2. **pipe()** - Establishes communication between processes.
+3. **dup2()** - Redirects standard input/output.
+4. **execve()** - Replaces a process image with a new command.
+5. **access()** - Checks if a file exists and has executable permissions.
+6. **open()** - Opens files for reading/writing.
+7. **close()** - Closes file descriptors.
+8. **waitpid()** - Waits for a child process to finish execution.
+9. **perror()** - Prints error messages.
+
+### **Basic Shell Pipeline (`|`)**
+```bash
+ls -l | wc -l
+```
+Equivalent to executing:
+1. Run `ls -l` and redirect its output to a pipe.
+2. Run `wc -l`, taking the pipe output as its input.
+
+---
+
+## 2. Steps to Implement PIPEX
+
+### **Step 1: Parse Input Arguments**
+- The program is executed as:
+  ```bash
+  ./pipex infile "cmd1 args1" "cmd2 args2" outfile
+  ```
+- Extract and validate:
+  - `infile` (should be readable).
+  - `outfile` (should be writable/creatable).
+  - `cmd1` and `cmd2`.
+
+### **Step 2: Open Files**
+- Open `infile` with `O_RDONLY`.
+- Open `outfile` with `O_CREAT | O_WRONLY | O_TRUNC`, and permissions `0644`.
+
+### **Step 3: Create a Pipe**
+- Use `pipe(fd)` to create a file descriptor array:
+  - `fd[0]` → Read end.
+  - `fd[1]` → Write end.
+
+### **Step 4: Fork First Child for `cmd1`**
+- Redirect `infile` to stdin (`dup2(infile, STDIN_FILENO)`).
+- Redirect `stdout` to pipe (`dup2(fd[1], STDOUT_FILENO)`).
+- Close unused file descriptors.
+- Execute `cmd1` using `execve()`.
+
+### **Step 5: Fork Second Child for `cmd2`**
+- Redirect `stdin` to pipe (`dup2(fd[0], STDIN_FILENO)`).
+- Redirect `outfile` to stdout (`dup2(outfile, STDOUT_FILENO)`).
+- Close unused file descriptors.
+- Execute `cmd2` using `execve()`.
+
+### **Step 6: Close Unused File Descriptors and Wait for Children**
+- Close all file descriptors after forking.
+- Use `waitpid()` to wait for both child processes.
+
+---
+
+## 3. BONUS PART (Multiple Pipes)
+The **bonus** part extends the project to support multiple commands:
+```bash
+./pipex infile "cmd1 args1" "cmd2 args2" ... "cmdN argsN" outfile
+```
+
+### **How to Handle Multiple Commands?**
+- Instead of two forks, use a loop to fork for each command.
+- For each command:
+  1. Create a new pipe.
+  2. Fork a new child.
+  3. Redirect input/output using `dup2()`.
+  4. Execute command with `execve()`.
+  5. Close unused pipes.
+  6. Repeat for the next command.
+
+### **Handling Here-Document (`<<`) (Optional Bonus)**
+- Implement reading from standard input instead of an input file.
+- Use a loop to read lines until a delimiter is found.
+- Redirect the input to the first command.
+
+### **Special Cases to Handle**
+- **Invalid commands** (`command not found`).
+- **Empty arguments**.
+- **Absolute/relative paths** for executables.
+- **Permission issues**.
+- **Memory leaks** (use `free()` for dynamically allocated memory).
+
+---
+
+## 4. Error Handling
+- Print descriptive error messages using `perror()`.
+- Handle invalid file access (missing `infile`, unwritable `outfile`).
+- Handle failed `fork()`, `execve()`, and `pipe()` calls.
+- Avoid memory leaks by freeing allocated memory.
+
+---
+
+## 5. Summary Checklist
+✅ Parse and validate arguments.
+✅ Open files.
+✅ Create pipes.
+✅ Fork child processes.
+✅ Redirect I/O using `dup2()`.
+✅ Execute commands with `execve()`.
+✅ Handle multiple commands (bonus).
+✅ Implement Here-Document (optional bonus).
+✅ Proper error handling.
+✅ Free allocated memory and avoid leaks.
+
+---
+
+### 🚀 **Congratulations! You’re now ready to implement PIPEX from scratch!**
+
+
