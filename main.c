@@ -14,7 +14,6 @@
 
 char	*get_path(char **env)
 {
-
 	int	i;
 	char *path;
 
@@ -33,37 +32,86 @@ char	*get_path(char **env)
 	return (NULL);
 }
 
+int	check_access(char *cmd)
+{
+	if (access(cmd, F_OK | X_OK) == 0)
+		return (1);
+	return (0);
+}
+
+void	execute_cmd(char *cmd, char **env)
+{
+
+}
+
+void	process_pipex(int fd_in, char *cmd, int fd_out, char **env)
+{
+	pid_t	pid;
+
+	pid = fork();
+
+	if (pid == 0)
+	{
+	if (dup2(fd_in, 0) == -1)
+			exit(1);
+	if (dup2(fd_out, 1) == -1)
+			exit(1);
+		execute_cmd(cmd, env);
+		exit(7);
+	}
+}
+
+void	creat_processs(int ac, char **av, int i, char **env)
+{
+	int	fd_in;
+	int	fd_out;
+	int	fd[2];
+
+	fd_in = open(av[1], O_RDONLY);
+	if (fd_in == -1)
+		exit(1);
+	while (i < ac - 2)
+	{
+		if (pipe(fd) == -1)
+			exit(1);
+		process_pipex(fd_in, av[i], fd[1], env);
+		close(fd[1]);
+		fd_out = fd[0];
+		i++;
+	}
+}
+
+int	check_arg(int ac, char **av)
+{
+	int	i;
+	int	total_args;
+
+	total_args = 5;
+	while (ac < total_args)
+	{
+		ft_printf("Invalid number of arguments\n");
+		exit(3);
+	}
+	return (2);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char	*path;
 	char	**split_path;
-	int i, j;
-	/*t_pipe *cmnd;*/
-	/*if (ac  < 5)*/
-	/*{*/
-	/*	ft_printf("Error: Invalid number of arguments.\n./pipex infile \"ls -l\" \"wc -l\" outfile\n");*/
-	/*	exit(1);*/
-	/*}*/
+	int	fd[2];
+	int i;
+
+	i = check_arg(ac, av);
+	if (ac != 5)
+	{
+		ft_printf("Error: Bad arguments\n");
+		ft_printf("./pipex <infile> <cmd1> <cmd2> <outfile>\n");
+		return (1);
+	}
 	path = get_path(env);
-	if (!path)
-	{
-		perror("Error\n");
-		exit(1);
-	}
 	split_path = ft_split(path, ':');
-	char **all_cmnd;
-	/*int fd1 = open("infile", O_RDONLY);*/
-	i = 1;
-	while (i < ac)
-	{
-		all_cmnd = ft_split(av[i], ' ');
-		j = 0;
-		while (all_cmnd[j])
-		{
-			printf("%s ", all_cmnd[j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
+	if (pipe(fd) == -1)
+			exit(1);
+	creat_processs(ac, av, i, env);
 }
