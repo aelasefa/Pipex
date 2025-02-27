@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:54:36 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/26 14:03:15 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:35:28 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,24 +55,30 @@ char	*find_path(char *cmd, char **env)
 	char	*path;
 	int		i;
 
-	if (check_access(cmd))
-		return (ft_strdup(cmd));
-	path = get_path(env);
-	split_path = ft_split(path, ':');
-	if (!split_path)
-		return (NULL);
-	i = 0;
-	while (split_path)
+	if (ft_strchr(cmd, '/'))
 	{
-		cmd_path = ft_strjoin(split_path[i], cmd);
-		if (cmd_path && check_access(cmd_path))
-		{
-			free_arr(split_path);
-			return (cmd_path);
-		}
-		free(cmd_path);
-		i++;
+		if (check_access(cmd))
+			return (cmd);
 	}
-	free_arr(split_path);
+	else 
+	{
+		path = get_path(env);
+		split_path = ft_split(path, ':');
+		if (!split_path)
+			return (NULL);
+		i = 0;
+		while (split_path[i])
+		{
+			cmd_path = ft_strjoin(split_path[i], cmd);
+			if (cmd_path && check_access(cmd_path))
+			{
+				free_arr(split_path);
+				return (cmd_path);
+			}
+			free(cmd_path);
+			i++;
+		}
+		free_arr(split_path);
+	}
 	return (NULL);
 }
