@@ -12,54 +12,6 @@
 
 #include "pipex.h"
 
-char	*get_path(char **env)
-{
-	int	i;
-	char *path;
-
-	if (!env || !(*env))
-		return (NULL);
-	i = 0;
-	while (env[i])
-	{
-		if (!ft_strncmp(env[i], "PATH=", 5))
-		{
-			path = env[i];
-			return (path + 5);
-		}
-		i++;
-	}
-	return (NULL);
-}
-
-char	*find_path(char *cmd, char **env)
-{
-	char	**split_path;
-	char	*cmd_path;
-	char	*path;
-	int		i;
-	if (check_access(cmd))
-		return (ft_strdup(cmd));
-	path = get_path(env);
-	split_path = ft_split(path, ':');
-	if (!split_path)
-		return (NULL);
-	i = 0;
-	while (split_path)
-	{
-		cmd_path = ft_strjoin(split_path[i], cmd);
-		if (cmd_path && check_access(cmd_path))
-		{
-			free_arr(split_path);
-			return (cmd_path);
-		}
-		free(cmd_path);
-		i++;
-	}
-	free_arr(split_path);
-	return (NULL);
-}
-
 void	execute_cmd(char *cmd, char **env)
 {
 	char	**split_cmd;
@@ -128,7 +80,7 @@ void	creat_processs(int ac, char **av, int i, char **env)
 int	main(int ac, char **av, char **env)
 {
 	int	fd[2];
-	int i;
+	int	i;
 
 	i = check_arg(ac, av);
 	check_env(ac, av, env, i);
