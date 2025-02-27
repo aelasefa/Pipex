@@ -6,11 +6,11 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 10:18:34 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/26 10:24:35 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/02/26 12:12:57 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_pipex.h"
+#include "pipex.h"
 
 char	*ft_strdup(char *s1)
 {
