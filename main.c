@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:28:29 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/26 17:17:12 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:35:40 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ void	process_pipex(int fd_in, char *cmd, int fd_out, char **env)
 		ft_perror("pid failed");
 	if (pid == 0)
 	{
-		if (dup2(fd_in, 0) == -1)
-			exit(1);
 		if (dup2(fd_out, 1) == -1)
 			ft_perror("dup2 failed");
+		if (dup2(fd_in, 0) == -1)
+			exit(1);
 		execute_cmd(cmd, env);
 		exit(7);
 	}
@@ -55,7 +55,6 @@ void	creat_processs(int ac, char **av, int i, char **env)
 	int	fd_in;
 	int	fd_out;
 	int	fd[2];
-
 	fd_in = open(av[1], O_RDONLY);
 	if (fd_in == -1)
 		ft_printf("input file error");
