@@ -14,9 +14,9 @@
 
 int	check_arg(int ac, char **av)
 {
-	(void)av;
 	int	total_args;
 
+	(void)av;
 	total_args = 5;
 	while (ac < total_args)
 	{
@@ -38,3 +38,22 @@ void	check_env(int ac, char **av, char **env, int i)
 	exit(2);
 }
 
+char	*get_path(char **env)
+{
+	int		i;
+	char	*path;
+
+	if (!env || !(*env))
+		return (NULL);
+	i = 0;
+	while (env[i])
+	{
+		if (!ft_strncmp(env[i], "PATH=", 5))
+		{
+			path = env[i];
+			return (path + 5);
+		}
+		i++;
+	}
+	return (NULL);
+}
