@@ -90,8 +90,8 @@ int	main(int ac, char **av, char **env)
 	check_env(ac, av, env, i);
 	if (ac != 5)
 	{
-		ft_printf("Error: Bad arguments\n");
-		ft_printf("./pipex <infile> <cmd1> <cmd2> <outfile>\n");
+		ft_putstr_fd("Error: Bad arguments\n", 2);
+		ft_putstr_fd("./pipex <infile> <cmd1> <cmd2> <outfile>\n", 2);
 		return (1);
 	}
 	if (pipe(fd) == -1)
