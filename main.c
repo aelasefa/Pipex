@@ -97,4 +97,5 @@ int	main(int ac, char **av, char **env)
 	if (pipe(fd) == -1)
 		ft_perror("pipe failed");
 	creat_processs(ac, av, i, env);
+	close_fd(fd[0], fd[1]);
 }
