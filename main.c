@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:28:29 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/27 18:35:40 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:42:42 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,10 @@ void	process_pipex(int fd_in, char *cmd, int fd_out, char **env)
 	{
 		if (dup2(fd_out, 1) == -1)
 			ft_perror("dup2 failed");
+		close(fd_out);
 		if (dup2(fd_in, 0) == -1)
 			exit(1);
+		close(fd_in);
 		execute_cmd(cmd, env);
 		exit(7);
 	}
@@ -55,6 +57,7 @@ void	creat_processs(int ac, char **av, int i, char **env)
 	int	fd_in;
 	int	fd_out;
 	int	fd[2];
+
 	fd_in = open(av[1], O_RDONLY);
 	if (fd_in == -1)
 		ft_printf("input file error");
@@ -64,16 +67,18 @@ void	creat_processs(int ac, char **av, int i, char **env)
 			ft_perror("Pipe failed");
 		process_pipex(fd_in, av[i], fd[1], env);
 		close(fd[1]);
+		if (fd_in != -1)
+			close(fd_in);
 		fd_in = fd[0];
 		i++;
 	}
-	fd_out = open(av[4], O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	fd_out = open(av[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_out == -1)
 		ft_perror("Output file error");
 	process_pipex(fd_in, av[i], fd_out, env);
+	close(fd[0]);
 	close_fd(fd_out, fd_in);
-	while (wait(NULL) > 0)
-		;
+	while (wait(NULL) > 0) ;
 }
 
 int	main(int ac, char **av, char **env)
