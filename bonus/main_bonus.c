@@ -41,12 +41,14 @@ void	process_pipex(int fd_in, char *cmd, int fd_out, char **env)
 		ft_perror("pid failed");
 	if (pid == 0)
 	{
-		if (dup2(fd_in, 0) == -1)
-			exit(1);
 		if (dup2(fd_out, 1) == -1)
 			ft_perror("dup2 failed");
+		close(fd_out);
+		if (dup2(fd_in, 0) == -1)
+			exit(1);
+		close(fd_in);
 		execute_cmd(cmd, env);
-		exit(7);
+		exit(0);
 	}
 }
 
@@ -65,13 +67,16 @@ void	creat_processs(int ac, char **av, int i, char **env)
 			ft_perror("Pipe failed");
 		process_pipex(fd_in, av[i], fd[1], env);
 		close(fd[1]);
+		if (fd_in != 1)
+			close(fd_in);
 		fd_in = fd[0];
 		i++;
 	}
-	fd_out = open(av[ac - 1], O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	fd_out = open(av[ac - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_out == -1)
 		ft_perror("Output file error");
 	process_pipex(fd_in, av[i], fd_out, env);
+	close(fd[0]);
 	close_fd(fd_out, fd_in);
 	while (wait(NULL) > 0)
 		;
@@ -84,13 +89,8 @@ int	main(int ac, char **av, char **env)
 
 	i = check_arg(ac, av);
 	check_env(ac, av, env, i);
-	if (ac < 5)
-	{
-		ft_printf("Error: Bad arguments\n");
-		ft_printf("./pipex <infile> <cmd1> <cmd2> ... <cmdn><outfile>\n");
-		return (1);
-	}
 	if (pipe(fd) == -1)
 		ft_perror("pipe failed");
 	creat_processs(ac, av, i, env);
+	close_fd(fd[0], fd[1]);
 }
