@@ -82,15 +82,48 @@ void	creat_processs(int ac, char **av, int i, char **env)
 		;
 }
 
+void	ft_here_doc(char *finish, int fd)
+{
+	char	*line;
+
+	while (1)
+	{
+		ft_putstr_fd("here_doc> ", 1);
+		line = get_next_line(0);
+		if (!line)
+			break ;
+		if (ft_strncmp(line, finish, ft_strlen(finish)) == 0
+			&& line[ft_strlen(finish)] == '\n')
+		{
+			free(line);
+			break ;
+		}
+		write(fd, line, ft_strlen(line));
+		free(line);
+	}
+	get_next_line(-1);
+	close(fd);
+}
+
 int	main(int ac, char **av, char **env)
 {
-	int	fd[2];
 	int	i;
+	int	fd;
 
 	i = check_arg(ac, av);
 	check_env(ac, av, env, i);
-	if (pipe(fd) == -1)
-		ft_perror("pipe failed");
+	if (i == 3)
+	{
+		fd = open(av[1], O_WRONLY | O_CREAT | O_APPEND, 0777); 
+		ft_here_doc(av[2], fd);
+		i = 2;
+		while (i < ac - 1)
+		{
+			av[i] = av[i + 1];
+			i++;
+		}
+		ac--;
+	}
+	i = 2;
 	creat_processs(ac, av, i, env);
-	close_fd(fd[0], fd[1]);
 }
