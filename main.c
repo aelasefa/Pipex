@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:28:29 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/27 19:42:42 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/03/02 02:21:09 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,9 @@ void	execute_cmd(char *cmd, char **env)
 	if (!path)
 	{
 		free_arr(split_cmd);
-		ft_perror("Command not found");
+		ft_perror("Error ");
 	}
 	execve(path, split_cmd, env);
-	free(path);
 	free_arr(split_cmd);
 	ft_perror("Execution failed");
 }
@@ -78,7 +77,8 @@ void	creat_processs(int ac, char **av, int i, char **env)
 	process_pipex(fd_in, av[i], fd_out, env);
 	close(fd[0]);
 	close_fd(fd_out, fd_in);
-	while (wait(NULL) > 0) ;
+	while (wait(NULL) > 0)
+		;
 }
 
 int	main(int ac, char **av, char **env)
