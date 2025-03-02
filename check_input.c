@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 12:02:03 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/26 12:13:17 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/03/02 02:59:23 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ int	check_arg(int ac, char **av)
 	total_args = 5;
 	while (ac < total_args)
 	{
-		ft_printf("Invalid number of arguments\n");
+		ft_putstr_fd("Error: Bad arguments\n", 2);
+		ft_putstr_fd("./pipex <infile> <cmd1> <cmd2> <outfile>\n", 2);
 		exit(3);
 	}
 	return (2);
