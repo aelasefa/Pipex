@@ -34,7 +34,7 @@ char	*ft_strdup(char *s1)
 
 char	*ft_strjoin(char *s1, char *s2)
 {
-	char*(arr);
+	char *(arr);
 	int (i), (j);
 	arr = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 2));
 	if (!arr)
