@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:28:34 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/26 14:02:13 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/02/28 18:42:09 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ typedef struct s_pipe
 // ft_strjoin
 char		*ft_strdup(char *s1);
 char		*ft_strjoin(char *s1, char *s2);
+char		*ft_strchr(char *s, int c);
+void		ft_putstr_fd(char *s, int fd);
+
+int			ft_strcmp(char *s1, char *s2);
 // check_input
 int			check_arg(int ac, char **av);
 void		check_env(int ac, char **av, char **env, int i);
