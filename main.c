@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:28:29 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/03/02 02:21:09 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/03/02 03:01:32 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ void	process_pipex(int fd_in, char *cmd, int fd_out, char **env)
 
 void	creat_processs(int ac, char **av, int i, char **env)
 {
-	int	fd_in;
-	int	fd_out;
-	int	fd[2];
-
+	int (fd_in), (fd_out), fd[2];
 	fd_in = open(av[1], O_RDONLY);
 	if (fd_in == -1)
 		ft_printf("input file error");
