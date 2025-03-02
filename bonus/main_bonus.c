@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:28:29 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/26 17:17:12 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/03/02 02:12:05 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	execute_cmd(char *cmd, char **env)
 		ft_perror("Command not found");
 	}
 	execve(path, split_cmd, env);
-	free(path);
 	free_arr(split_cmd);
 	ft_perror("Execution failed");
 }
@@ -88,7 +87,6 @@ void	ft_here_doc(char *finish, int fd)
 
 	while (1)
 	{
-		ft_putstr_fd("here_doc> ", 1);
 		line = get_next_line(0);
 		if (!line)
 			break ;
@@ -114,7 +112,7 @@ int	main(int ac, char **av, char **env)
 	check_env(ac, av, env, i);
 	if (i == 3)
 	{
-		fd = open(av[1], O_WRONLY | O_CREAT | O_APPEND, 0777); 
+		fd = open(av[1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 		ft_here_doc(av[2], fd);
 		i = 2;
 		while (i < ac - 1)
