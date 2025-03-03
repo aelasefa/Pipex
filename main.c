@@ -18,13 +18,16 @@ void	execute_cmd(char *cmd, char **env)
 	char	*path;
 
 	split_cmd = ft_split(cmd, ' ');
-	if (!split_cmd)
+	if (!split_cmd || !split_cmd[0])
 		exit(1);
 	path = find_path(split_cmd[0], env);
 	if (!path)
 	{
 		free_arr(split_cmd);
-		ft_perror("Error ");
+		ft_putstr_fd("Command not found: ", 2);
+		write(2, cmd, ft_strlen(cmd));
+		write(2, "\n", 1);
+		exit(1);
 	}
 	execve(path, split_cmd, env);
 	free_arr(split_cmd);
