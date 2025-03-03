@@ -38,6 +38,8 @@ char	*valid_cmd(char **split_path, char *cmd)
 	int		i;
 	char	*cmd_path;
 
+	if (!split_path || !cmd)
+		return (NULL);
 	i = 0;
 	while (split_path[i])
 	{
@@ -47,6 +49,7 @@ char	*valid_cmd(char **split_path, char *cmd)
 		free(cmd_path);
 		i++;
 	}
+	free_arr(split_path);
 	return (NULL);
 }
 
@@ -59,20 +62,17 @@ char	*find_path(char *cmd, char **env)
 	if (ft_strchr(cmd, '/'))
 	{
 		if (check_access(cmd))
-			return (cmd);
+			return (ft_strdup(cmd));
+		return (NULL);
 	}
-	else
-	{
-		path = get_path(env);
-		split_path = ft_split(path, ':');
-		if (!split_path)
-			return (NULL);
-		valid = valid_cmd(split_path, cmd);
-		if (!valid)
-			return (NULL);
-		else
-			return (valid);
-		free_arr(split_path);
-	}
-	return (NULL);
+	if (cmd[0] == ' ')
+		return (NULL);
+	path = get_path(env);
+	if (!path)
+		return (NULL);
+	split_path = ft_split(path, ':');
+	if (!split_path)
+		return (NULL);
+	valid = valid_cmd(split_path, cmd);
+	return (valid);
 }
