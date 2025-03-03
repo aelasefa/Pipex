@@ -12,27 +12,59 @@
 
 #include "pipex_bonus.h"
 
+void	check_emty_cmd(int ac, char **av)
+{
+	int	i;
+
+	i = 2;
+	while(i < ac - 1)
+	{
+		if (!av[i][0])
+		{
+			ft_putstr_fd(" permission denied:\n", 2);
+		}
+		i++;
+	}
+}
+
 int	check_arg(int ac, char **av)
 {
-	int	total_args;
+	int	expected_args;
+	int	is_here_doc;
 
-	(void)av;
-	total_args = 5;
-	while (ac < total_args)
+	check_emty_cmd(ac, av);
+	if (ac < 2)
 	{
-		ft_printf("Invalid number of arguments\n");
+		ft_putstr_fd("Invalid number of arguments\n", 2);
 		exit(3);
 	}
+	is_here_doc = 0;
+	if (ft_strcmp("here_doc", av[1]) == 0)
+		is_here_doc = 1;
+	expected_args = 5;
+	if (is_here_doc)
+		expected_args = 6;
+	if (ac < expected_args)
+	{
+		ft_putstr_fd("Invalid number of arguments\n", 2);
+		exit(3);
+	}
+	if (is_here_doc)
+		return (3);
 	return (2);
 }
 
 void	check_env(int ac, char **av, char **env, int i)
 {
-	if (*env != NULL)
+	if (*env != NULL || env != NULL)
 		return ;
 	while (i < ac - 1)
 	{
-		ft_printf("Command not found: %s\n", av[i]);
+		if (!find_path(av[i], env))
+		{
+			ft_putstr_fd("Command not found:", 2);
+			ft_printf("%s\n", av[i]);
+		}
 		i++;
 	}
 	exit(2);

@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:54:36 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/02/27 18:38:26 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/03/02 03:20:52 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,52 +33,41 @@ int	check_access(char *cmd)
 	return (0);
 }
 
-void	free_arr(char **arr)
+char	*valid_cmd(char **split_path, char *cmd)
 {
-	int	i;
+	int		i;
+	char	*cmd_path;
 
-	if (!arr)
-		return ;
 	i = 0;
-	while (arr[i])
+	while (split_path[i])
 	{
-		free(arr[i]);
+		cmd_path = ft_strjoin(split_path[i], cmd);
+		if (cmd_path && check_access(cmd_path))
+			return (free_arr(split_path), cmd_path);
+		free(cmd_path);
 		i++;
 	}
-	free(arr);
+	return (NULL);
 }
 
 char	*find_path(char *cmd, char **env)
 {
 	char	**split_path;
-	char	*cmd_path;
 	char	*path;
-	int		i;
+	char	*valid;
 
 	if (ft_strchr(cmd, '/'))
 	{
 		if (check_access(cmd))
-			return (cmd);
+			return (ft_strdup(cmd));
+		return (NULL);
 	}
-	else
-	{
-		path = get_path(env);
-		split_path = ft_split(path, ':');
-		if (!split_path)
-			return (NULL);
-		i = 0;
-		while (split_path)
-		{
-			cmd_path = ft_strjoin(split_path[i], cmd);
-			if (cmd_path && check_access(cmd_path))
-			{
-				free_arr(split_path);
-				return (cmd_path);
-			}
-			free(cmd_path);
-			i++;
-		}
-	free_arr(split_path);
-	}
-	return (NULL);
+	path = get_path(env);
+	if (!path)
+		return (NULL);
+	split_path = ft_split(path, ':');
+	if (!split_path)
+		return (NULL);
+	valid = valid_cmd(split_path, cmd);
+	return (valid);
 }

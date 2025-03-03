@@ -90,7 +90,7 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
+		return (free(storage), NULL);
 	if (read(fd, 0, 0) == -1)
 	{
 		free(storage);

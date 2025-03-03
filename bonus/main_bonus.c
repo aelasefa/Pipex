@@ -6,11 +6,12 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:28:29 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/03/02 02:12:05 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/03/02 03:00:33 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
+
 
 void	execute_cmd(char *cmd, char **env)
 {
@@ -18,13 +19,16 @@ void	execute_cmd(char *cmd, char **env)
 	char	*path;
 
 	split_cmd = ft_split(cmd, ' ');
-	if (!split_cmd)
+	if (!split_cmd || !split_cmd[0])
 		exit(1);
 	path = find_path(split_cmd[0], env);
 	if (!path)
 	{
 		free_arr(split_cmd);
-		ft_perror("Command not found");
+		ft_putstr_fd("Command not found: ", 2);
+		write(2, cmd, ft_strlen(cmd));
+		write(2, "\n", 1);
+		exit(1);
 	}
 	execve(path, split_cmd, env);
 	free_arr(split_cmd);
@@ -53,10 +57,7 @@ void	process_pipex(int fd_in, char *cmd, int fd_out, char **env)
 
 void	creat_processs(int ac, char **av, int i, char **env)
 {
-	int	fd_in;
-	int	fd_out;
-	int	fd[2];
-
+	int fd[2], fd_in, (fd_out);
 	fd_in = open(av[1], O_RDONLY);
 	if (fd_in == -1)
 		ft_printf("input file error");
