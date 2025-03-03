@@ -17,11 +17,11 @@ void	check_emty_cmd(int ac, char **av)
 	int	i;
 
 	i = 2;
-	while(i < ac - 1)
+	while (i < ac - 1)
 	{
-		if (!av[i][0])
+		if (!av[i][0] || av[i][0] == ' ')
 		{
-			ft_putstr_fd(" permission denied:\n", 2);
+			ft_putstr_fd("permission denied:\n", 2);
 		}
 		i++;
 	}
@@ -63,7 +63,8 @@ void	check_env(int ac, char **av, char **env, int i)
 		if (!find_path(av[i], env))
 		{
 			ft_putstr_fd("Command not found:", 2);
-			ft_printf("%s\n", av[i]);
+			ft_putstr_fd(av[i], 2);
+			write(2, "\n", 1);
 		}
 		i++;
 	}
