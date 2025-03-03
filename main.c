@@ -17,6 +17,12 @@ void	execute_cmd(char *cmd, char **env)
 	char	**split_cmd;
 	char	*path;
 
+	if (!cmd[0] || cmd[0] == ' ')
+	{
+		write(2, "command not found: ", 19);
+		write(2, cmd, ft_strlen(cmd));
+		write(2, "\n", 1);
+	}
 	split_cmd = ft_split(cmd, ' ');
 	if (!split_cmd || !split_cmd[0])
 		exit(1);
@@ -24,13 +30,15 @@ void	execute_cmd(char *cmd, char **env)
 	if (!path)
 	{
 		free_arr(split_cmd);
-		ft_putstr_fd("Command not found: ", 2);
+		write(2, "command not found: ", 19);
 		write(2, cmd, ft_strlen(cmd));
 		write(2, "\n", 1);
 		exit(1);
+
 	}
 	execve(path, split_cmd, env);
 	free_arr(split_cmd);
+	free(path);
 	ft_perror("Execution failed");
 }
 
