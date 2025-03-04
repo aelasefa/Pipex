@@ -63,7 +63,7 @@ void	creat_processs(int ac, char **av, int i, char **env)
 	int (fd_in), (fd_out), fd[2];
 	fd_in = open(av[1], O_RDONLY);
 	if (fd_in == -1)
-		ft_printf("input file error");
+		ft_putstr_fd("input file error\n", 2);
 	while (i < ac - 2)
 	{
 		if (pipe(fd) == -1)
